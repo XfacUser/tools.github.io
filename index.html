@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kodingers' Toolkit | Main Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #1a1b26;
+            --surface-color: #24283b;
+            --text-color: #c0caf5;
+            --comment-color: #565f89;
+            --accent-color: #7aa2f7;
+            --error-color: #f7768e;
+            --success-color: #9ece6a;
+            --border-radius: 12px;
+            --font-primary: 'Poppins', sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Center vertically for the menu */
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+        .screen {
+            display: none; /* All screens hidden by default */
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .screen.visible {
+            display: block;
+            opacity: 1;
+        }
+        header { text-align: center; margin-bottom: 2rem; }
+        header h1 { font-size: 2.8rem; font-weight: 700; color: var(--accent-color); margin-bottom: 0.5rem; }
+        header p { font-size: 1.2rem; color: var(--comment-color); }
+        
+        /* Welcome Screen Styles */
+        #welcome-screen .choice-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .choice-card {
+            background-color: var(--surface-color);
+            padding: 2.5rem 3rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            width: 300px;
+        }
+        .choice-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            border-color: var(--accent-color);
+        }
+        .choice-card h2 { font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--text-color); }
+        .choice-card p { font-size: 1rem; color: var(--comment-color); }
+
+        /* Tool Screen Styles */
+        .card {
+            background-color: var(--surface-color);
+            padding: 1.5rem 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .card h2 { text-align: center; font-size: 1.8rem; }
+        .back-button {
+            background: none;
+            border: 1px solid var(--comment-color);
+            color: var(--comment-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: flex-start; /* Position to the left */
+        }
+        .back-button:hover {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border-color: var(--accent-color);
+        }
+        textarea, input[type="password"] {
+            width: 100%; padding: 0.8rem; background-color: var(--bg-color); border: 2px solid var(--comment-color); border-radius: 8px; color: var(--text-color); font-size: 1rem; transition: border-color 0.3s;
+        }
+        textarea { font-family: var(--font-mono); min-height: 200px; resize: vertical; }
+        textarea:focus, input[type="password"]:focus { outline: none; border-color: var(--accent-color); }
+        .button-group { display: flex; gap: 1rem; justify-content: center; }
+        button {
+            padding: 0.8rem 1.5rem; border: none; border-radius: 8px; background-color: var(--accent-color); color: #1a1b26; font-family: var(--font-primary); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem;
+        }
+        button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(122, 162, 247, 0.4); }
+        button:disabled { background-color: var(--comment-color); cursor: not-allowed; opacity: 0.7; }
+        .spinner { width: 16px; height: 16px; border: 2px solid #1a1b26; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; }
+        .output-container { position: relative; }
+        .copy-button { position: absolute; top: 10px; right: 10px; padding: 0.3rem 0.6rem; font-size: 0.8rem; background-color: rgba(192, 202, 245, 0.2); color: var(--text-color); border: 1px solid var(--comment-color); cursor: pointer; border-radius: 5px; opacity: 0.5; transition: opacity 0.3s; }
+        .output-container:hover .copy-button { opacity: 1; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="welcome-screen" class="screen">
+            <header>
+                <h1>Kodingers' Toolkit</h1>
+                <p>Pilih alat yang ingin kamu gunakan.</p>
+            </header>
+            <div class="choice-container">
+                <div class="choice-card" id="choice-crypto">
+                    <h2>Encrypt & Decrypt</h2>
+                    <p>Amankan teks dan pesan rahasiamu.</p>
+                </div>
+                <div class="choice-card" id="choice-converter">
+                    <h2>Code Converter</h2>
+                    <p>Ubah sintaks CJS ke ESM atau sebaliknya.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="crypto-tool-screen" class="screen">
+            <button class="back-button">← Kembali ke Menu</button>
+            <div class="card">
+                <h2>Enkripsi & Dekripsi (AES-GCM)</h2>
+                <textarea id="crypto-input" placeholder="Tulis atau tempel teks di sini..."></textarea>
+                <input type="password" id="crypto-key" placeholder="Kunci Rahasia (Password)">
+                <div class="button-group">
+                    <button id="encrypt-btn">Encrypt</button>
+                    <button id="decrypt-btn">Decrypt</button>
+                </div>
+                <div class="output-container">
+                    <textarea id="crypto-output" placeholder="Hasil akan muncul di sini..." readonly></textarea>
+                    <button class="copy-button" onclick="copyToClipboard('crypto-output')">Copy</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="converter-tool-screen" class="screen">
+            <button class="back-button">← Kembali ke Menu</button>
+            <div class="card">
+                <h2>Konverter Kode (CJS ↔ ESM)</h2>
+                <textarea id="code-input" placeholder="Tempel kode JavaScript (CJS atau ESM) di sini..."></textarea>
+                <div class="button-group">
+                    <button id="to-esm-btn">Convert to ESM</button>
+                    <button id="to-cjs-btn">Convert to CJS</button>
+                </div>
+                 <div class="output-container">
+                    <textarea id="code-output" placeholder="Hasil konversi dari Gemini akan muncul di sini..." readonly></textarea>
+                     <button class="copy-button" onclick="copyToClipboard('code-output')">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const GEMINI_API_KEY = "AIzaSyDGzBQzdDYXUP58D0bciPJsa0TUxJumgAA"; 
+    const allScreens = document.querySelectorAll('.screen');
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const cryptoToolScreen = document.getElementById('crypto-tool-screen');
+    const converterToolScreen = document.getElementById('converter-tool-screen');
+
+    const choiceCryptoBtn = document.getElementById('choice-crypto');
+    const choiceConverterBtn = document.getElementById('choice-converter');
+    const backButtons = document.querySelectorAll('.back-button');
+
+    function showScreen(screenToShow) {
+        allScreens.forEach(screen => {
+            screen.classList.remove('visible');
+        });
+        screenToShow.classList.add('visible');
+    }
+
+    choiceCryptoBtn.addEventListener('click', () => showScreen(cryptoToolScreen));
+    choiceConverterBtn.addEventListener('click', () => showScreen(converterToolScreen));
+    backButtons.forEach(button => {
+        button.addEventListener('click', () => showScreen(welcomeScreen));
+    });
+
+    // Show the welcome screen by default when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        showScreen(welcomeScreen);
+    });
+
+    // --- DOM Elements for Tools ---
+    const cryptoInput = document.getElementById('crypto-input');
+    const cryptoKey = document.getElementById('crypto-key');
+    const encryptBtn = document.getElementById('encrypt-btn');
+    const decryptBtn = document.getElementById('decrypt-btn');
+    const cryptoOutput = document.getElementById('crypto-output');
+
+    const codeInput = document.getElementById('code-input');
+    const toEsmBtn = document.getElementById('to-esm-btn');
+    const toCjsBtn = document.getElementById('to-cjs-btn');
+    const codeOutput = document.getElementById('code-output');
+
+    // --- Utility Functions ---
+    const showLoading = (button, text) => {
+        button.disabled = true;
+        button.innerHTML = `<div class="spinner"></div> ${text}`;
+    };
+    const hideLoading = (button, originalText) => {
+        button.disabled = false;
+        button.innerHTML = originalText;
+    };
+    function copyToClipboard(elementId) {
+        document.getElementById(elementId).select();
+        document.execCommand('copy');
+        alert('Teks berhasil disalin!');
+    }
+
+    // --- Crypto Module (Web Crypto API) ---
+    // (Kode ini sama persis seperti sebelumnya, tidak perlu diubah)
+    const getCryptoKey=async(t,e)=>{const n=new TextEncoder,a=await window.crypto.subtle.importKey("raw",n.encode(t),{name:"PBKDF2"},!1,["deriveKey"]);return window.crypto.subtle.deriveKey({name:"PBKDF2",salt:e,iterations:1e5,hash:"SHA-256"},a,{name:"AES-GCM",length:256},!0,["encrypt","decrypt"])},encryptText=async(t,e)=>{try{const n=new TextEncoder,a=window.crypto.getRandomValues(new Uint8Array(16)),r=window.crypto.getRandomValues(new Uint8Array(12)),c=await getCryptoKey(e,a),o=await window.crypto.subtle.encrypt({name:"AES-GCM",iv:r},c,n.encode(t)),i=new Uint8Array(o),s=new Uint8Array(a.length+r.length+i.length);return s.set(a,0),s.set(r,a.length),s.set(i,a.length+r.length),btoa(String.fromCharCode.apply(null,s))}catch(t){throw new Error("Enkripsi gagal.")}},decryptText=async(t,e)=>{try{const n=new TextDecoder,a=atob(t),r=new Uint8Array(a.length);for(let t=0;t<a.length;t++)r[t]=a.charCodeAt(t);const c=r.slice(0,16),o=r.slice(16,28),i=r.slice(28),s=await getCryptoKey(e,c),d=await window.crypto.subtle.decrypt({name:"AES-GCM",iv:o},s,i);return n.decode(d)}catch(t){throw new Error("Dekripsi gagal. Pastikan teks dan kunci benar.")}};
+
+    const callGeminiAPI=async(t,e)=>{const n=GEMINI_API_KEY;if(!n||"MASUKKAN_API_KEY_KAMU_DI_SINI"===n)throw new Error("API Key belum diatur di dalam file HTML! Mohon edit kodenya.");const a="ESM"===e?"CommonJS (CJS)":"ECMAScript Modules (ESM)",r=`You are a JavaScript code conversion expert. Convert the following ${a} code to ${e}. Provide ONLY the raw code as the output, with no explanations or markdown fences. Here is the code: ${t}`,c=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${n}`,o=await fetch(c,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:[{text:r}]}],generationConfig:{temperature:.2,maxOutputTokens:4096}})});if(!o.ok){const t=await o.json();throw new Error(`Gemini API Error: ${t.error.message||o.statusText}`)}const i=await o.json();if(!i.candidates||!i.candidates[0].content.parts[0].text)throw new Error("Respons dari Gemini tidak valid atau kosong.");let s=i.candidates[0].content.parts[0].text;return s=s.replace(/^```(javascript)?\n/i,"").replace(/```$/i,""),s.trim()};
+
+    // --- Event Listeners for Tools ---
+    encryptBtn.addEventListener('click', async () => {
+        if (!cryptoInput.value || !cryptoKey.value) { alert('Teks dan Kunci Rahasia tidak boleh kosong!'); return; }
+        showLoading(encryptBtn, 'Encrypting...');
+        try { cryptoOutput.value = await encryptText(cryptoInput.value, cryptoKey.value); } catch (error) { cryptoOutput.value = `Error: ${error.message}`; } finally { hideLoading(encryptBtn, 'Encrypt'); }
+    });
+    decryptBtn.addEventListener('click', async () => {
+        if (!cryptoInput.value || !cryptoKey.value) { alert('Teks terenkripsi dan Kunci Rahasia tidak boleh kosong!'); return; }
+        showLoading(decryptBtn, 'Decrypting...');
+        try { cryptoOutput.value = await decryptText(cryptoInput.value, cryptoKey.value); } catch (error) { cryptoOutput.value = `Error: ${error.message}`; } finally { hideLoading(decryptBtn, 'Decrypt'); }
+    });
+    toEsmBtn.addEventListener('click', async () => {
+        if (!codeInput.value) { alert('Kode tidak boleh kosong!'); return; }
+        showLoading(toEsmBtn, 'Converting...');
+        try { codeOutput.value = await callGeminiAPI(codeInput.value, 'ESM'); } catch (error) { codeOutput.value = `Error: ${error.message}`; } finally { hideLoading(toEsmBtn, 'Convert to ESM'); }
+    });
+    toCjsBtn.addEventListener('click', async () => {
+        if (!codeInput.value) { alert('Kode tidak boleh kosong!'); return; }
+        showLoading(toCjsBtn, 'Converting...');
+        try { codeOutput.value = await callGeminiAPI(codeInput.value, 'CJS'); } catch (error) { codeOutput.value = `Error: ${error.message}`; } finally { hideLoading(toCjsBtn, 'Convert to CJS'); }
+    });
+</script>
+</body>
+  </html>
